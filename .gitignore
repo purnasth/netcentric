@@ -1,0 +1,21 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build Results
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+*.log
+
+# IDE Configuration
+.idea/
+.vscode/
+*.DS_Store
+
+# Other
+*.tmp
