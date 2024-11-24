@@ -1,35 +1,4 @@
-# Assignment 1
-
-<details>
-<summary>Write a C# program to print "Hello, World!"</summary>
-
-### Write a C# program to print "Hello, World!".
-
-```csharp
-using System;
-
-namespace HelloWorld
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, World!");
-        }
-    }
-}
-```
-
----
-</details>
-
-<details>
-<summary>Write a C# program to implement a jagged array and create a calender</summary>
-
-### Write a C# program to implement a jagged array and create a calender.
-
-```csharp
-using System;
+﻿using System;
 
 namespace CalenderJaggedArray
 {
@@ -62,5 +31,3 @@ namespace CalenderJaggedArray
         }
     }
 }
-```
-</details>
