@@ -64,3 +64,52 @@ namespace CalenderJaggedArray
 }
 ```
 </details>
+
+
+<details>
+<summary>Create a simple Windows Form Application using C#</summary>
+
+### Create a simple Windows Form Application using C#.
+- The form should have a label and textbox for username and password.
+- The form should have a button to submit the username and password.
+- The form should have a label to display the message "Login Successful" or "Login Failed".
+- The form should test the username and password and display the message accordingly.
+- The form should be closed after the success message is displayed.
+
+```csharp
+
+namespace PurnaForm
+{
+    public partial class Form1 : Form
+    {
+        private object labelMessage;
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string username = textBox1.Text;
+            string password = textBox2.Text;
+
+            //string text = textBox1.Text;
+            //MessageBox.Show("Welcome" + text);
+
+            if (username == "Purna" && password == "123")
+            {
+                this.Hide();
+                MessageBox.Show($"Welcome, {username}!");
+            }
+            else
+            {
+                MessageBox.Show("Invalid Credentials");
+            }
+        }
+    }
+}
+```
+
+---
+</details>
