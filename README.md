@@ -1,207 +1,277 @@
-# Assignment 1
+# Assignment 4
 
-<details>
-<summary>Write a C# program to print "Hello, World!"</summary>
-
-### Write a C# program to print "Hello, World!".
+## .netcentric program to perform CRUD operations on a database.
 
 ```csharp
 using System;
+using Microsoft.Data.SqlClient;
 
-namespace HelloWorld
+namespace CRUDproducts
 {
-    class Program
+    internal class Program
     {
+        private static readonly string connectionString = "Data Source=LONGTAIL-ACER\\SQLEXPRESS;Initial Catalog=AppleStoreDb;Integrated Security=True;TrustServerCertificate=True";
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-        }
-    }
-}
-```
-
----
-</details>
-
-<details>
-<summary>Write a C# program to implement a jagged array and create a calender</summary>
-
-### Write a C# program to implement a jagged array and create a calender.
-
-```csharp
-using System;
-
-namespace CalenderJaggedArray
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            int[][] calendar = new int[5][];
-
-            calendar[0] = new int[7] { 1, 2, 3, 4, 5, 6, 7 };
-            calendar[1] = new int[7] { 8, 9, 10, 11, 12, 13, 14 };
-            calendar[2] = new int[7] { 15, 16, 17, 18, 19, 20, 21 };
-            calendar[3] = new int[7] { 22, 23, 24, 25, 26, 27, 28 };
-            calendar[4] = new int[3] { 29, 30, 31 };
-
-            Console.WriteLine("Simple Calendar using a Jagged Array:");
-            Console.WriteLine("---------------------------------------");
-
-            for (int week = 0; week < calendar.Length; week++)
+            while (true)
             {
-                Console.Write("Week " + (week + 1) + ": ");
+                Console.WriteLine("\nChoose an operation:");
+                Console.WriteLine("1. Insert Product");
+                Console.WriteLine("2. Display Products");
+                Console.WriteLine("3. Update Product");
+                Console.WriteLine("4. Delete Product");
+                Console.WriteLine("5. Exit");
 
-                for (int day = 0; day < calendar[week].Length; day++)
+                string choice = Console.ReadLine();
+
+                switch (choice)
                 {
-                    Console.Write(calendar[week][day] + "\t");
+                    case "1":
+                        Insert();
+                        break;
+                    case "2":
+                        Display();
+                        break;
+                    case "3":
+                        Update();
+                        break;
+                    case "4":
+                        Delete();
+                        break;
+                    case "5":
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
                 }
-
-                Console.WriteLine();
             }
         }
-    }
-}
-```
-</details>
 
-
-<details>
-<summary>Create a simple Windows Form Application using C#</summary>
-
-### Create a simple Windows Form Application using C#.
-- The form should have a label and textbox for username and password.
-- The form should have a button to submit the username and password.
-- The form should have a label to display the message "Login Successful" or "Login Failed".
-- The form should test the username and password and display the message accordingly.
-- The form should be closed after the success message is displayed.
-
-```csharp
-
-namespace PurnaForm
-{
-    public partial class Form1 : Form
-    {
-        private object labelMessage;
-
-        public Form1()
+        static void Insert()
         {
-            InitializeComponent();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            string username = textBox1.Text;
-            string password = textBox2.Text;
-
-            //string text = textBox1.Text;
-            //MessageBox.Show("Welcome" + text);
-
-            if (username == "Purna" && password == "123")
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                this.Hide();
-                MessageBox.Show($"Welcome, {username}!");
-            }
-            else
-            {
-                MessageBox.Show("Invalid Credentials");
-            }
-        }
-    }
-}
-```
-
----
-</details>
-
-
-<details>
-<summary>Create a simple Calculator application using C#</summary>
-
-### Create a simple Calculator application using C#.
-- The form should have two textboxes to input two numbers.
-- The form should have four buttons to perform addition, subtraction, multiplication, and division.
-- The form should display the result in an alert box.
-
-```csharp
-namespace PurnaCalculator
-{
-    public partial class PurnaCalculator : Form
-    {
-        public PurnaCalculator()
-        {
-            InitializeComponent();
-        }
-
-        private void PerformCalculation(string operation)
-        {
-            try
-            {
-                double number1 = double.Parse(textBox1.Text);
-                double number2 = double.Parse(textBox2.Text);
-                double result = 0;
-                string description = "";
-
-                switch (operation)
+                try
                 {
-                    case "+":
-                        this.Hide();
-                        result = number1 + number2;
-                        description = $"The calculation of {number1} + {number2} = {result}";
-                        break;
-                    case "-":
-                        this.Hide();
-                        result = number1 - number2;
-                        description = $"The calculation of {number1} - {number2} = {result}.";
-                        break;
-                    case "*":
-                        this.Hide();
-                        result = number1 * number2;
-                        description = $"The calculation of {number1} * {number2} = {result}.";
-                        break;
-                    case "/":
-                        if (number2 == 0)
+                    conn.Open();
+
+                    Console.Write("Enter Product Name: ");
+                    string name = Console.ReadLine();
+
+                    Console.Write("Enter Description: ");
+                    string description = Console.ReadLine();
+
+                    Console.Write("Enter Price: ");
+                    float price = float.Parse(Console.ReadLine());
+
+                    string query = "INSERT INTO Products (Name, Description, Price) VALUES (@Name, @Description, @Price)";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Name", name);
+                        cmd.Parameters.AddWithValue("@Description", description);
+                        cmd.Parameters.AddWithValue("@Price", price);
+
+                        cmd.ExecuteNonQuery();
+                        Console.WriteLine("Product added successfully.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            }
+        }
+
+        static void Display()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "SELECT * FROM Products";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            MessageBox.Show("Division by 0 is not allowed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
+                            Console.WriteLine("\n--- Product List ---");
+                            Console.WriteLine($"{"ID",-5} {"Name",-20} {"Description",-30} {"Price",-10}");
+
+                            while (reader.Read())
+                            {
+                                Console.WriteLine($"{reader.GetInt32(0),-5} {reader.GetString(1),-20} {reader.GetString(2),-30} {reader.GetDouble(3),-10:C}");
+                            }
                         }
-                        this.Hide();
-                        result = number1 / number2;
-                        description = $"The calculation of {number1} / {number2} = {result}.";
-                        break;
+                    }
                 }
-
-                MessageBox.Show($"{description}\n\n- Purna Shrestha", "Calculation Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
             }
-            catch (FormatException)
+        }
+
+        static void Update()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                MessageBox.Show("Please enter valid numbers.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                try
+                {
+                    conn.Open();
+
+                    Console.Write("Enter Product ID to update: ");
+                    int id = int.Parse(Console.ReadLine());
+
+                    Console.Write("Enter new Product Name: ");
+                    string name = Console.ReadLine();
+
+                    Console.Write("Enter new Description: ");
+                    string description = Console.ReadLine();
+
+                    Console.Write("Enter new Price: ");
+                    float price = float.Parse(Console.ReadLine());
+
+                    string query = "UPDATE Products SET Name = @Name, Description = @Description, Price = @Price WHERE Id = @Id";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Id", id);
+                        cmd.Parameters.AddWithValue("@Name", name);
+                        cmd.Parameters.AddWithValue("@Description", description);
+                        cmd.Parameters.AddWithValue("@Price", price);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Product updated successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No product found with the given ID.");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
             }
         }
 
-        private void buttonAdd_Click(object sender, EventArgs e)
+        static void Delete()
         {
-            PerformCalculation("+");
-        }
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
 
-        private void buttonSubtract_Click(object sender, EventArgs e)
-        {
-            PerformCalculation("-");
-        }
+                    Console.Write("Enter Product ID to delete: ");
+                    int id = int.Parse(Console.ReadLine());
 
-        private void buttonMultiply_Click(object sender, EventArgs e)
-        {
-            PerformCalculation("*");
-        }
+                    string query = "DELETE FROM Products WHERE Id = @Id";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Id", id);
 
-        private void buttonDivide_Click(object sender, EventArgs e)
-        {
-            PerformCalculation("/");
-        } 
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Product deleted successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No product found with the given ID.");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            }
+        }
     }
 }
 ```
 
----
-</details>
+## Output
 
+```plaintext
+Choose an operation:
+1. Insert Product
+2. Display Products
+3. Update Product
+4. Delete Product
+5. Exit
+
+1
+
+Enter Product Name: iPhone XX
+Enter Description: The latest iPhone model with 6G support.
+Enter Price: 999.99
+
+Product added successfully.
+
+2
+
+--- Product List ---
+ID    Name                 Description                      Price
+1     iPhone XX            The latest iPhone model with 6G support.  $999.99
+2     iPhone 19            The latest iPhone model with 5G support.  $999.00
+
+3
+
+Enter Product ID to update: 1
+
+Enter new Product Name: iPhone 20
+Enter new Description: The latest iPhone model with 6G support.
+Enter new Price: 1099.99
+
+Product updated successfully.
+
+2
+
+--- Product List ---
+ID    Name                 Description                      Price
+1     iPhone 20            The latest iPhone model with 6G support.  $1,099.99
+2     iPhone 19            The latest iPhone model with 5G support.  $999.00
+
+4
+
+Enter Product ID to delete: 2
+
+Product deleted successfully.
+
+2
+
+--- Product List ---
+
+ID    Name                 Description                      Price
+1     iPhone 20            The latest iPhone model with 6G support.  $1,099.99
+
+5
+```
+
+## Database
+
+```sql
+CREATE DATABASE AppleStoreDb;
+
+USE AppleStoreDb;
+
+CREATE TABLE Products
+(
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(50) NOT NULL,
+    Description NVARCHAR(255) NOT NULL,
+    Price FLOAT NOT NULL
+);
+
+```
+
+## Connection String
+
+```plaintext
+Data Source=PURNA-SHRESTHA\SQLEXPRESS;Initial Catalog=AppleStoreDb;Integrated Security=True;TrustServerCertificate=True
+```
