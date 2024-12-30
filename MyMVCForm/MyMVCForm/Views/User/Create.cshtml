@@ -1,0 +1,27 @@
+﻿@model MVCExample.Models.UserModel
+
+@{
+    ViewBag.Title = "Create User";
+}
+
+<h2>Create User</h2>
+
+@if (TempData["Message"] != null)
+{
+    <p style="color: green;">@TempData["Message"]</p>
+}
+
+@using (Html.BeginForm("Create", "User", FormMethod.Post))
+{
+    <div>
+        <label for="Username">Username</label>
+        @Html.TextBoxFor(m => m.Username, new { id = "Username", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Username)
+    </div>
+    <div>
+        <label for="Email">Email</label>
+        @Html.TextBoxFor(m => m.Email, new { id = "Email", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Email)
+    </div>
+    <button type="submit">Submit</button>
+}
